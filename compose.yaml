@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:17.5-alpine
+    environment:
+      POSTGRES_USER: edu_owner
+      POSTGRES_PASSWORD: owner_local_only
+      POSTGRES_DB: education
+    ports: ['127.0.0.1:5432:5432']
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/001-roles.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U edu_owner -d education']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  api:
+    build: .
+    profiles: ['api']
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://edu_runtime:runtime_local_only@db:5432/education
+    ports: ['127.0.0.1:3000:3000']
+    depends_on:
+      db: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:3000/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  postgres_data:

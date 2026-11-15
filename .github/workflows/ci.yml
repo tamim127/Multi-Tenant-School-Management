@@ -1,0 +1,37 @@
+name: backend
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgres://edu_runtime:runtime_local_only@localhost:5432/education
+      MIGRATION_DATABASE_URL: postgres://edu_owner:owner_local_only@localhost:5432/education
+      DB_POOL_MAX: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: docker compose up -d --wait db
+      - run: pnpm db:migrate
+      - run: pnpm db:migrate
+      - run: pnpm db:seed
+      - run: pnpm db:seed
+      - run: pnpm test:integration
+      - run: pnpm openapi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: openapi.json
+      - run: docker compose build api
+      - run: docker compose --profile api up -d --wait api
+      - run: node scripts/smoke.mjs
+      - if: always()
+        run: docker compose --profile api down -v
