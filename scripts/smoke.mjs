@@ -36,6 +36,14 @@ for (const [index, identity] of identities.entries()) {
     200,
   );
   assert.equal(
+    (await request(`/v1/tenants/${identity.tenant}/academic/presets`, identity.token)).status,
+    200,
+  );
+  assert.equal(
+    (await request(`/v1/tenants/${identity.tenant}/academic/active`, identity.token)).status,
+    200,
+  );
+  assert.equal(
     (await request(`/v1/tenants/${identities[1 - index].tenant}/campuses`, identity.token)).status,
     403,
   );
@@ -43,5 +51,5 @@ for (const [index, identity] of identities.entries()) {
   assert.equal((await request('/v1/users/me', identity.token)).status, 401);
 }
 console.log(
-  'PASS: live API health, Swagger, OpenAPI, both tenant reads, cross-tenant denial and logout',
+  'PASS: live API health, Swagger, OpenAPI, academic reads, both tenant reads, cross-tenant denial and logout',
 );

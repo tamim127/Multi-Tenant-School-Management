@@ -45,14 +45,14 @@ Audit events store actor, tenant, action, resource UUID, generated request ID, a
 
 ## Future module boundaries (not implemented)
 
-| Phase | Module                              | Ownership and boundary                                                                                      |
-| ----- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 2     | School/college/university academics | Separate domain models described in `academic-models.md`; use tenant-safe keys and publish enrollment facts |
-| 3     | Fees and billing                    | Own invoices, charges, payments, reconciliation and immutable ledger; consumes enrollment references        |
-| 3     | Payroll                             | Own contracts, pay runs, deductions and payout ledger; consumes staff references, never shares fee balances |
-| 4     | Exams and assessment                | Own assessment definitions, grading, results and publication; integrates through academic identifiers       |
-| 5     | Realtime/WebSockets                 | Authenticated, membership-verified subscriptions; revocation and reconnect semantics required               |
-| 5     | Devices                             | Dedicated ingestion, device credentials, replay protection, validation and idempotency                      |
-| 5     | Public API keys                     | Separate machine identities, scopes, hashed secrets, rotation, revocation and rate limits                   |
+| Phase | Module               | Ownership and boundary                                                                                      |
+| ----- | -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Later | Academic operations  | Enrollment, promotion, credits and Hifz tracking build on Phase 2 configuration; preserve tenant-safe keys  |
+| 3     | Fees and billing     | Own invoices, charges, payments, reconciliation and immutable ledger; consumes enrollment references        |
+| 3     | Payroll              | Own contracts, pay runs, deductions and payout ledger; consumes staff references, never shares fee balances |
+| 4     | Exams and assessment | Own assessment definitions, grading, results and publication; integrates through academic identifiers       |
+| 5     | Realtime/WebSockets  | Authenticated, membership-verified subscriptions; revocation and reconnect semantics required               |
+| 5     | Devices              | Dedicated ingestion, device credentials, replay protection, validation and idempotency                      |
+| 5     | Public API keys      | Separate machine identities, scopes, hashed secrets, rotation, revocation and rate limits                   |
 
 No tables, routes, background jobs, dependencies, or stubs implement these future business modules.

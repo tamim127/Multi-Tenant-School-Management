@@ -9,6 +9,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { Database } from './database';
 import { SessionGuard } from './auth';
 import { completeContract } from './contract';
+import { AcademicController } from './academic';
 import {
   AuthController,
   HealthController,
@@ -46,7 +47,13 @@ class Errors implements ExceptionFilter {
   }
 }
 @Module({
-  controllers: [AuthController, HealthController, TenantsController, UsersController],
+  controllers: [
+    AuthController,
+    HealthController,
+    TenantsController,
+    UsersController,
+    AcademicController,
+  ],
   providers: [Database, SessionGuard],
 })
 export class AppModule {}

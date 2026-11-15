@@ -41,3 +41,19 @@ An earlier verification attempt was blocked when C: had only 5,058,560 bytes fre
 - Browser interaction with Swagger's Try it out: unrun. HTTP smoke verification checks that docs and OpenAPI are served; integration tests exercise the API contract directly.
 
 No claims are made about future business modules, production load, backup recovery, or external deployment.
+
+## Phase 2 verification — 2026-11-15
+
+The Phase 2 change added migrations `0002` through `0007`, academic configuration APIs, 18 starting categories, historical snapshots, current institution type metadata and 17 new PostgreSQL integration tests. An initial run exposed preset ordering failures, which were fixed in additive migration `0003`; later migrations added relationship checks, categories and history. All final checks below were rerun after those fixes.
+
+| Exact command                                   | Final result                                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `corepack.cmd pnpm db:migrate`                  | Passed; additive migrations through `0007_institution_type.sql` applied                    |
+| `corepack.cmd pnpm check`                       | Passed; TypeScript, ESLint, formatting, 2 unit tests, production compilation               |
+| `corepack.cmd pnpm test:integration`            | Passed; 30/30 real PostgreSQL tests (17 academic, 13 Phase 1 regressions)                  |
+| `corepack.cmd pnpm openapi`                     | Passed; current OpenAPI contract exported                                                  |
+| `docker compose build api`                      | Passed; final API image built from frozen lockfile                                         |
+| `docker compose --profile api up -d --wait api` | Passed; API and PostgreSQL healthy                                                         |
+| `node scripts/smoke.mjs`                        | Passed; health, Swagger/OpenAPI, academic reads, both tenants, cross-tenant denial, logout |
+
+GitHub-hosted Actions and browser interaction remain unrun for the reasons above. Their constituent backend checks passed locally.

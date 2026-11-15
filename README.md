@@ -1,8 +1,8 @@
-# Education SaaS backend — Phase 0 and Phase 1
+# Education SaaS backend — Phase 0 through Phase 2
 
-Backend only: NestJS/Fastify, TypeScript, pnpm, PostgreSQL, Drizzle/pg, versioned SQL, OpenAPI and CI. Includes authentication, revocable sessions, users, School v1 tenant provisioning, campuses, memberships, tenant permissions, append-only audit events and health checks. No frontend or later-phase business modules.
+Backend only: NestJS/Fastify, TypeScript, pnpm, PostgreSQL, Drizzle/pg, versioned SQL, OpenAPI and CI. Includes Phase 1 identity/tenancy and Phase 2 configurable academic structures, versioned presets, history and tenant isolation. No frontend or student, finance, or examination workflows.
 
-Read [architecture](docs/architecture.md), [academic models](docs/academic-models.md), [permissions](docs/permissions.md), and [API conventions](docs/api.md).
+Read [architecture](docs/architecture.md), [Phase 2 academic architecture](docs/phase2-architecture.md), [academic models](docs/academic-models.md), [permissions](docs/permissions.md), and [API conventions](docs/api.md).
 
 ## Clean checkout
 

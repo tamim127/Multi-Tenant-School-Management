@@ -17,9 +17,9 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "openapi": "tsx scripts/openapi.ts",
-    "test": "vitest run --exclude tests/integration.test.ts",
-    "test:integration": "vitest run tests/integration.test.ts",
-    "check": "tsc --noEmit && eslint . && prettier --check . && vitest run --exclude tests/integration.test.ts && tsc -p tsconfig.build.json"
+    "test": "vitest run --exclude tests/integration.test.ts --exclude tests/academic.integration.test.ts",
+    "test:integration": "vitest run tests/integration.test.ts tests/academic.integration.test.ts",
+    "check": "tsc --noEmit && eslint . && prettier --check . && vitest run --exclude tests/integration.test.ts --exclude tests/academic.integration.test.ts && tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@fastify/helmet": "^13.0.0",

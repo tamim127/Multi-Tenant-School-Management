@@ -27,6 +27,7 @@ const tenant = object({
   slug: str,
   presetKey: { type: 'string', enum: ['school'] },
   presetVersion: { type: 'integer', enum: [1] },
+  institutionType: str,
   settings: { type: 'object', additionalProperties: true },
 });
 const session = object({
@@ -44,6 +45,7 @@ const audit = object({
   requestId: str,
   createdAt: date,
 });
+const academic = { type: 'object', additionalProperties: true } as SchemaObject;
 const list = (items: SchemaObject) => object({ items: { type: 'array', items, maxItems: 100 } });
 
 // Explicit output schemas prevent inferred empty responses and work with both tsc and tsx.
@@ -56,7 +58,7 @@ export function completeContract(document: OpenAPIObject) {
         name: match[1],
         in: 'path',
         required: true,
-        schema: uuid,
+        schema: match[1] === 'resource' ? str : uuid,
       }));
       let schema: SchemaObject = object({ id: uuid });
       if (path.includes('/health/')) schema = object({ status: { type: 'string', enum: ['ok'] } });
@@ -72,13 +74,22 @@ export function completeContract(document: OpenAPIObject) {
       else if (path.endsWith('/users')) schema = list(user);
       else if (path.endsWith('/permissions')) schema = list(object({ permission: str }));
       else if (path.endsWith('/audit-events')) schema = list(audit);
-      else if (path.includes('/campuses')) schema = method === 'get' ? list(campus) : campus;
+      else if (path.includes('/academic/')) {
+        if (path.endsWith('/apply-preset')) schema = object({ applied: { type: 'boolean' } });
+        else if (path.endsWith('/active'))
+          schema = { type: 'object', additionalProperties: { type: 'array', items: academic } };
+        else schema = method === 'get' ? list(academic) : academic;
+      } else if (path.includes('/campuses')) schema = method === 'get' ? list(campus) : campus;
       else if (path.includes('/memberships')) schema = method === 'get' ? list(member) : member;
       else if (path === '/v1/tenants' && method === 'get')
         schema = list(object({ id: uuid, name: str, role: str }));
       else if (path === '/v1/tenants/{tenantId}') schema = tenant;
       const empty = method === 'delete' || path.endsWith('/logout');
-      const status = empty ? '204' : method === 'post' && !path.endsWith('/login') ? '201' : '200';
+      const status = empty
+        ? '204'
+        : method === 'post' && !path.endsWith('/login') && !path.endsWith('/archive')
+          ? '201'
+          : '200';
       operation.responses = {
         [status]: empty
           ? { description: 'Success, no content' }

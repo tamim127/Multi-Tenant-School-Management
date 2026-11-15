@@ -1,6 +1,6 @@
-# Separate academic models (design only)
+# Separate academic models
 
-Academic models are not interchangeable names on one generic class table. These are future bounded contexts; none is provisioned in Phase 1.
+Academic models are not interchangeable names on one generic class table. Phase 2 implements configurable structures; student enrollment, progression and assessment remain future bounded contexts. Phase 1 provisioning still does not force an academic structure.
 
 | Concept           | School                                | College                                                 | University                                                       |
 | ----------------- | ------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------- |

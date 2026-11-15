@@ -21,6 +21,7 @@ export const tenants = pgTable('tenants', {
   slug: text('slug').notNull(),
   presetKey: text('preset_key').notNull(),
   presetVersion: integer('preset_version').notNull(),
+  institutionType: text('institution_type').notNull(),
   settings: jsonb('settings').notNull(),
 });
 export const campuses = pgTable('campuses', {
